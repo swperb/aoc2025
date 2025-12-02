@@ -12,3 +12,4 @@ C:\Users\jproctor\Source\Repos\aoc2025\day1\obj\Debug\net8.0\refint\day1.dll
 C:\Users\jproctor\Source\Repos\aoc2025\day1\obj\Debug\net8.0\day1.pdb
 C:\Users\jproctor\source\repos\aoc2025\day1\obj\Debug\net8.0\day1.genruntimeconfig.cache
 C:\Users\jproctor\source\repos\aoc2025\day1\obj\Debug\net8.0\ref\day1.dll
+C:\Users\jproctor\Source\Repos\aoc2025\day1\obj\Debug\net8.0\day1.sourcelink.json
