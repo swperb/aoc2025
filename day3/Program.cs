@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Linq;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Reflection.Metadata.Ecma335;
 
 public class BatteryBank
 {
@@ -123,28 +126,52 @@ public class BatteryBank
         {
             string batteryLine = linesArray[i];
 
-            int[] joltageValues = new int[12];
+            int maxJoltage = 0;
 
-            int maxVoltage = 0;
+            int startIndex = 0;
+            int endIndex = batteryLine.Length - 12;
 
-            for (int j = 0; j < batteryLine.Length; j++)
+            string[] top12Joltages = new string[12];
+
+            int remainingBatteries = 12;
+
+            int maxIndex = 0;
+
+            int indexCounter = 0;
+
+            while (remainingBatteries > 0)
             {
-                char c = batteryLine[j];
+                
 
-                int joltage = (int)Char.GetNumericValue(c);
-                int nextJoltage = (int)Char.GetNumericValue(batteryLine[j + 1]);
-
-                if (joltage > nextJoltage)
+                for (int j = startIndex; j < endIndex; j++)
                 {
-                    maxVoltage = (int)Char.GetNumericValue(batteryLine[j]);
+                    char c = batteryLine[j];
+                    int joltage = (int)Char.GetNumericValue(c);
+
+                    if (joltage > maxJoltage)
+                    {
+                        maxJoltage = joltage;
+                        maxIndex = j;
+
+                    }
+
                 }
 
+
+                top12Joltages[indexCounter] = maxJoltage.ToString();
+                indexCounter++;
+
+                remainingBatteries--;
+
+                startIndex = maxIndex + 1;
+                endIndex++;
 
             }
 
 
-
         }
+
+        return totalJoltageSum;
 
     }
 }
@@ -156,15 +183,15 @@ public partial class Program
 
         BatteryBank batteryBank = new BatteryBank();
 
-        string[] linesArray = batteryBank.linesArray(File.ReadAllLines("C:/Users/jproctor/source/repos/aoc2025/day3/input.txt"));
+        string[] linesArray = batteryBank.linesArray(File.ReadAllLines("C:/Users/jproctor/source/repos/aoc2025/day3/input2.txt"));
 
 
         long part1Sum = batteryBank.Part1(linesArray);
-        //long part2Sum = batteryBank.Part2(linesArray);
+        long part2Sum = batteryBank.Part2(linesArray);
 
 
         Console.WriteLine("Sum of Output Joltage: {0}", part1Sum);
-        //Console.WriteLine("Sum of Invalid IDs with any repeat: {0}", part2Sum);
+        Console.WriteLine("Sum of Highest Output Joltages in 12 Batteries: {0}", part2Sum);
 
     }
 }
