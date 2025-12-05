@@ -97,7 +97,6 @@ public class BatteryBank
             {
                 totalJoltageSum += combinedMaxJoltageLeftInt;
 
-                Console.WriteLine("Left is greater: {0}", combinedMaxJoltageLeftInt);
 
                 continue;
             }
@@ -106,7 +105,6 @@ public class BatteryBank
             {
                 totalJoltageSum += combinedMaxJoltageRightInt;
 
-                Console.WriteLine("Right is greater: {0}", combinedMaxJoltageRightInt);
 
                 continue;
             }
@@ -126,7 +124,6 @@ public class BatteryBank
         {
             string batteryLine = linesArray[i];
 
-            int maxJoltage = 0;
 
             int startIndex = 0;
             int endIndex = batteryLine.Length - 12;
@@ -135,15 +132,19 @@ public class BatteryBank
 
             int remainingBatteries = 12;
 
-            int maxIndex = 0;
+
 
             int indexCounter = 0;
 
             while (remainingBatteries > 0)
             {
-                
 
-                for (int j = startIndex; j < endIndex; j++)
+                int maxJoltage = 0;
+                int maxIndex = 0;
+
+
+
+                for (int j = startIndex; j <= endIndex; j++)
                 {
                     char c = batteryLine[j];
                     int joltage = (int)Char.GetNumericValue(c);
@@ -157,7 +158,6 @@ public class BatteryBank
 
                 }
 
-
                 top12Joltages[indexCounter] = maxJoltage.ToString();
                 indexCounter++;
 
@@ -168,6 +168,12 @@ public class BatteryBank
 
             }
 
+            string combinedTop12Joltages = string.Join("", top12Joltages);
+
+            long combinedTop12JoltagesInt = Convert.ToInt64(combinedTop12Joltages);
+
+
+            totalJoltageSum += combinedTop12JoltagesInt;
 
         }
 
@@ -183,7 +189,7 @@ public partial class Program
 
         BatteryBank batteryBank = new BatteryBank();
 
-        string[] linesArray = batteryBank.linesArray(File.ReadAllLines("C:/Users/jproctor/source/repos/aoc2025/day3/input2.txt"));
+        string[] linesArray = batteryBank.linesArray(File.ReadAllLines("C:/Users/jproctor/source/repos/aoc2025/day3/input.txt"));
 
 
         long part1Sum = batteryBank.Part1(linesArray);
