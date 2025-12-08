@@ -144,9 +144,11 @@ public class FreshIngredients
 
         for (int x = 0; x < minmaxRanges.GetLength(0); x++)
         {
+
             Console.WriteLine("Sorted Range {0}: {1}-{2}", x, minmaxRanges[x, 0], minmaxRanges[x, 1]);
         }
 
+        
 
 
         long[,] truncatedRanges = new long[minmaxRanges.GetLength(0), 2];
@@ -158,40 +160,63 @@ public class FreshIngredients
             //if next range overlaps current range, merge them
 
             bool maxRangeFound = false;
-            if (x + 1 < minmaxRanges.GetLength(0))
+            if (x + 1 > minmaxRanges.GetLength(0) || x - 1 < 0)
             {
-                if (minmaxRanges[x + 1, 0] <= minmaxRanges[x, 1])
+                continue;
+            }
+
+
+            if (x + 1 < minmaxRanges.GetLength(0) && minmaxRanges[x + 1, 0] <= minmaxRanges[x, 1])
+            {
+
+                int originalX = x;
+
+                long currentMin = minmaxRanges[originalX, 0];
+                long currentMax = minmaxRanges[originalX, 1];
+
+                //Loop until no more overlapping ranges are found
+                while (!maxRangeFound)
                 {
 
-                    int originalX = x;
-
-                    while (!maxRangeFound)
+                    // if next range overlaps current range, merge them
+                    if (x + 1 < minmaxRanges.GetLength(0) && minmaxRanges[x + 1, 0] <= currentMax) 
                     {
-                        if (x + 1 < minmaxRanges.GetLength(0) && minmaxRanges[x + 1, 0] <= minmaxRanges[x, 1])
-                        {
-                            truncatedRanges[originalX, 0] = minmaxRanges[originalX, 0];
-                            truncatedRanges[originalX, 1] = minmaxRanges[x + 1, 1];
-                            x++;
 
-                            Console.WriteLine("Merging ranges into: {0}-{1}", truncatedRanges[originalX, 0], truncatedRanges[originalX, 1]);
+                        if (minmaxRanges[x + 1, 1] <= currentMax)
+                        {
+
+
+                            truncatedRanges[originalX, 0] = currentMin;
+                            truncatedRanges[originalX, 1] = currentMax;
+                            x++;
+                            continue;
                         }
+
                         else
                         {
 
-                            Console.WriteLine("Final merged range: {0}-{1}", truncatedRanges[originalX, 0], truncatedRanges[originalX, 1]);
-                            maxRangeFound = true;
-                            continue;
+
+                            truncatedRanges[originalX, 0] = currentMin;
+                            truncatedRanges[originalX, 1] = minmaxRanges[x + 1, 1];
+
+                            currentMax = truncatedRanges[originalX, 1];
+
                         }
+
+                        x++;
                     }
 
 
-                }
 
-                else
-                {
-                    truncatedRanges[x, 0] = minmaxRanges[x, 0];
-                    truncatedRanges[x, 1] = minmaxRanges[x, 1];
+                    else
+                    {
 
+                        Console.WriteLine("Final merged range: {0}-{1}", truncatedRanges[originalX, 0], truncatedRanges[originalX, 1]);
+                        maxRangeFound = true;
+                        break;
+                    }
+
+                        
                 }
 
 
@@ -199,7 +224,9 @@ public class FreshIngredients
 
             else
             {
-                break;
+                truncatedRanges[x, 0] = minmaxRanges[x, 0];
+                truncatedRanges[x, 1] = minmaxRanges[x, 1];
+
             }
 
 
@@ -217,6 +244,7 @@ public class FreshIngredients
             
 
             long rangeLength = truncatedRanges[i, 1] - truncatedRanges[i, 0] + 1;
+
 
             Console.WriteLine("Range: {0}-{1}, Range Length: {2}", truncatedRanges[i, 0], truncatedRanges[i, 1], rangeLength);
 
