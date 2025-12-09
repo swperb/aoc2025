@@ -92,81 +92,123 @@ public class MathHomework
     //Part 2 Solution
     public long Part2(string[] linesArray)
     {
-        int[,] mappedValueArray = new int[linesArray.Length - 1, linesArray[0].Length];
-        string[,] mappedSymbolArray = new string[1, linesArray[^1].Length];
 
-        int rows = linesArray.Length - 1;
-        int cols = 0;
 
-        for (int i = 0; i < linesArray.Length - 1; i++)
+        string[,] twoDLinesArray = new string[linesArray.Length, linesArray[0].Length];
+
+
+        for (int i = 0; i < linesArray.Length; i++)
         {
-
-            string[] currentValueArray = linesArray[i].ToString().Split(new char[0]).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-            cols = currentValueArray.Length;
-
-
-            for (int j = 0; j < cols; j++)
+            for (int j = 0; j < linesArray[i].Length; j++)
             {
-                mappedValueArray[i, j] = Int32.Parse(currentValueArray[j]);
+                twoDLinesArray[i, j] = linesArray[i][j].ToString();
             }
         }
 
+        int rows = twoDLinesArray.GetLength(0);
+        int cols = twoDLinesArray.GetLength(1);
 
-
-
-        string[] lastLineArray = linesArray[^1].ToString().Split(new char[0]).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-
-        for (int i = 0; i < lastLineArray.Length; i++)
+        for (int i = 0; i < rows; i++)
         {
-            mappedSymbolArray[0, i] = lastLineArray[i];
+            for (int j = 0; j < cols / 2; j++)
+            {
+                string temp = twoDLinesArray[i, j];
+
+                twoDLinesArray[i, j] = twoDLinesArray[i, cols - j - 1];
+
+                twoDLinesArray[i, cols - j - 1] = temp;
+            }
 
         }
 
+        List<int> currentValues = new List<int>();
 
         long answerSum = 0;
-        List<int> digits = new List<int>();
 
-        for (int i = 0; i < cols; i++)
+        long addedSum = 0;
+        long productSum = 1;
+
+        //Loop through 2D array column-wise
+        for (int i = 0; i < twoDLinesArray.GetLength(1); i++)
         {
-            long productSum = 1;
 
-            for (int j = 0; j < rows; j++)
+            int spaceCount = 0;
+
+            string currentColumn = "";
+            string currentOperator = "";
+
+            
+
+            //Loop through each row in the current column
+            for (int j = 0; j < twoDLinesArray.GetLength(0); j++)
             {
-                if (mappedValueArray[j, i] == 0)
+                if (twoDLinesArray[j, i] == " ")
                 {
+                    spaceCount++;
                     continue;
                 }
 
-                int tmpVal = Math.Abs(mappedValueArray[j, i]);
-
-                while (tmpVal > 0)
+                if (twoDLinesArray[j, i] == "+" || twoDLinesArray[j, i] == "*")
                 {
-                    int digit = tmpVal % 10;
-                    if (!digits.Contains(digit))
-                    {
-                        digits.Add(digit);
-                    }
-                    tmpVal /= 10;
+                    currentOperator = twoDLinesArray[j, i];
+                    continue;
                 }
 
+                
 
-                if (mappedSymbolArray[0, i] == "+")
-                {
-                    answerSum += mappedValueArray[j, i];
-                }
-                else if (mappedSymbolArray[0, i] == "*")
-                {
-                    productSum *= mappedValueArray[j, i];
+                currentColumn += twoDLinesArray[j, i];
 
-                }
+
+
             }
 
-            if (productSum != 1)
+            if (currentColumn == "")
             {
+                addedSum = 0;
+                productSum = 1;
+                currentValues.Clear();
+                continue;
+            }
+
+
+
+            int currentVal = Int32.Parse(currentColumn);
+
+            currentValues.Add(currentVal);
+
+
+
+
+
+
+
+            if (currentOperator == "+")
+            {
+                foreach (int val in currentValues)
+                {
+                    addedSum += val;
+                }
+
+                answerSum += addedSum;
+            }
+
+            else if (currentOperator == "*")
+            {
+                foreach (int val in currentValues)
+                {
+                    productSum *= val;
+                }
+
                 answerSum += productSum;
             }
 
+
         }
+
+
+
+        
+        
 
 
 
@@ -190,7 +232,7 @@ public partial class Program
 
 
         Console.WriteLine("Sum of all answers: {0}", part1Sum);
-        //Console.WriteLine("Sum of Unique Fresh Ingredient IDs: {0}", part2Sum);
+        Console.WriteLine("Sum of right-to-left column answers: {0}", part2Sum);
 
     }
 }
