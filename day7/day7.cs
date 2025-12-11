@@ -113,17 +113,9 @@ public class TachyonBeams
             }
         }
 
-        for (int i = 0; i < linesArray.Length; i++)
-        {
-            for (int j = 0; j < linesArray[i].Length; j++)
-            {
-                beamMap[i, j] = linesArray[i][j].ToString();
-            }
-        }
 
         beamMap[1, manifoldIndex] = "|";
-        
-        int nodeCount = 1;
+
 
         for (int x = 1; x < beamMap.GetLength(0); x++)
         {
@@ -137,7 +129,6 @@ public class TachyonBeams
                     }
                     if (beamMap[x + 1, y] == "^")
                     {
-                        nodeCount++;
 
                         if (y - 1 < 0 || y + 1 >= beamMap.GetLength(0))
                         {
@@ -159,8 +150,41 @@ public class TachyonBeams
         }
 
 
+        int nodeCount = 0;
 
-        
+        int[,] prevNode = new int[1, 2];
+
+        Dictionary<int, int[]> nodeCoordinates = new Dictionary<int, int[]>();
+
+        Dictionary<int, List<int[]>> nodePaths = new Dictionary<int, List<int[]>>();
+
+        List<List<int>> adjacency = new List<List<int>>();
+
+
+        for (int x = 2; x < beamMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < beamMap.GetLength(1); y++)
+            {
+
+                if (beamMap[x, y] == "^")
+                {
+                    nodeCount++;
+                    nodeCoordinates.Add(nodeCount, new int[2] { x, y });
+
+                    adjacency.Add(new List<int>());
+
+
+                }
+
+            }
+        }
+
+
+        foreach(var node in nodeCoordinates)
+        {
+            Console.WriteLine("Node {0} is at ({1},{2})", node.Key, node.Value[0], node.Value[1]);
+        }
+
 
 
         return 0;
