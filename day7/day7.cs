@@ -160,6 +160,8 @@ public class TachyonBeams
 
         List<List<int>> adjacency = new List<List<int>>();
 
+        int[,] leftBeam = new int[1, 2];
+        int[,] rightBeam = new int[1, 2];
 
         for (int x = 2; x < beamMap.GetLength(0); x++)
         {
@@ -169,9 +171,24 @@ public class TachyonBeams
                 if (beamMap[x, y] == "^")
                 {
                     nodeCount++;
-                    nodeCoordinates.Add(nodeCount, new int[2] { x, y });
 
-                    adjacency.Add(new List<int>());
+                    if (y - 1 > 0 && beamMap[x, y - 1] == "|")
+                    {
+                        Console.WriteLine("Node {0} has a beam to the left", nodeCount);
+
+                    }
+
+                    if (y + 1 < beamMap.GetLength(1) && beamMap[x, y + 1] == "|")
+                    {
+                        Console.WriteLine("Node {0} has a beam to the right", nodeCount);
+
+                        continue;
+                    }
+
+
+                    Console.WriteLine("Node {0} has no beams", nodeCount);
+
+
 
 
                 }
@@ -180,9 +197,12 @@ public class TachyonBeams
         }
 
 
-        foreach(var node in nodeCoordinates)
+        foreach (var node in nodePaths)
         {
-            Console.WriteLine("Node {0} is at ({1},{2})", node.Key, node.Value[0], node.Value[1]);
+            foreach (var coord in node.Value)
+            {
+                Console.WriteLine("Node {0} contains coordinate ({1}, {2})", node.Key, coord[0], coord[1]);
+            }
         }
 
 
